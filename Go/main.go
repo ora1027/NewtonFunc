@@ -6,27 +6,25 @@ import (
 )
 
 // Calc Newton Calculaion struct
-type Calc struct {
-	x float64
-}
+type Calc struct{}
 
 // fx f(x) formula
-func (calc Calc) fx() float64 {
-	return calc.x*calc.x*calc.x - 5*calc.x + 1
+func (calc Calc) fx(x float64) float64 {
+	return x*x*x - 5*x + 1
 }
 
 // df differentiated f(x)
-func (calc Calc) df() float64 {
-	return 3*calc.x*calc.x - 5
+func (calc Calc) df(x float64) float64 {
+	return 3*x*x - 5
 }
 
 // Newton_main Calculation for Newton method
-func (calc Calc) Newton_main(fx func(), df func(), x0 float64, maxIter int, epc float64) float64 {
+func (calc Calc) Newton_main(fx func(float64) float64, df func(float64) float64, x0 float64, maxIter int, epc float64) float64 {
 	var xNew float64
 	var x = x0
 	var iter int
 	for {
-		xNew = x - fx()/df()
+		xNew = x - fx(x)/df(x)
 		if math.Abs(x-xNew) < epc {
 			break
 		}
@@ -41,22 +39,15 @@ func (calc Calc) Newton_main(fx func(), df func(), x0 float64, maxIter int, epc 
 
 func main() {
 	calc := Calc{}
-	calc.x = 5.0
 
-	var y float64
+	var ans float64
 
-	y = calc.fx()
-	fmt.Println("The result of fx(5.0) : ", y)
+	ans = calc.Newton_main(calc.fx, calc.df, 2, 1000, 1e-10)
+	fmt.Println("The answer is : ", ans)
 
-	y = calc.df()
-	fmt.Println("The result of dx(5.0) : ", y)
+	ans = calc.Newton_main(calc.fx, calc.df, 0, 1000, 1e-10)
+	fmt.Println("The answer is : ", ans)
 
-	// fx, dfを関数オブジェクトを返す関数に変更する必要がある。
-	// var fx func()
-	// var df func()
-	// fx = calc.fx
-	// df = calc.df
-
-	// var ans float64
-	// ans = calc.Newton_main(calc.fx, calc.df, 2, 1000, 1e-10)
+	ans = calc.Newton_main(calc.fx, calc.df, 3, 1000, 1e-10)
+	fmt.Println("The answer is : ", ans)
 }
